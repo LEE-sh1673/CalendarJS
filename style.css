@@ -1,4 +1,5 @@
 @import "reset.css";
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
 * {
   box-sizing: border-box;
@@ -13,14 +14,15 @@ body {
   height: 100vh;
   background-color: #f6f9fc;
   overflow-x: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu,
+    Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   line-height: 1.5;
+  color: #0b401d;
 }
 
 .calendar__notification {
   width: 100vmin;
-  height: 12vmin;
+  height: 14vmin;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,7 +37,19 @@ body {
 .calendar__notification h2 {
   font-weight: 500;
   font-size: 3vmin;
-  margin-bottom: 2vmin;
+  margin-bottom: 1.5vmin;
+}
+
+.calendar__input {
+  border: none;
+  border-radius: 5px;
+  padding: 0.5vmin 1vmin;
+  margin: 1vmin 0;
+  font-size: 1em;
+}
+
+.calendar__input:focus {
+  outline: none;
 }
 
 .calendar {
@@ -51,6 +65,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .calendar .monthTable .monthTable__name {
@@ -60,23 +75,23 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-weight: bold;
-  font-size: 1.2em;
+  font-weight: 500;
+  font-size: 1em;
   background-color: #5eba7d;
   color: #fff;
-  border-top-right-radius: 15px;
-  border-top-left-radius: 15px;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
 }
 
 .calendar .monthTable .monthTable__contant {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: repeat(7, 1fr);
   grid-template-columns: repeat(7, 1fr);
-  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-  background-color: #ccc;
-  grid-gap: 1px;
+  background-color: #fff;
+  grid-gap: 2px;
+  padding: 1vmin;
 }
 
 .monthTable__contant div {
@@ -84,6 +99,13 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #fff;
+  font-size: 0.8em;
+}
+
+.daysWeek {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: #21bf56;
 }
 
 .sat {
@@ -92,6 +114,13 @@ body {
 
 .sun {
   color: #0579fc;
+}
+
+.today {
+  background-color: #21bf56 !important;
+  color: #fff;
+  border-radius: 50%;
+  border-width: -2px;
 }
 
 @media screen and (min-width: 300px) and (max-width: 700px) {
@@ -116,22 +145,25 @@ body {
     width: 100%;
   }
 
+  .calendar__input {
+    margin: 10vmin 0vmin;
+    width: 100%;
+    padding: 10px;
+  }
+
   .calendar {
     grid-template-rows: repeat(12, 1fr);
     grid-template-columns: repeat(1, 1fr);
+    width: 90vmin;
+    margin: 0 auto;
   }
 
-  .calendar .monthTable {
+  .calendar .monthTable,
+  .calendar .monthTable .monthTable__name {
     font-size: 5vmin;
   }
 
-  .calendar .monthTable .monthTable__name {
-    font-size: 6vmin;
-    width: 90vmin;
-  }
-
   .calendar .monthTable .monthTable__contant {
-    width: 90vmin;
     height: 90vmin;
   }
 }
