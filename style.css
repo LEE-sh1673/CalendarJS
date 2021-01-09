@@ -22,43 +22,69 @@ body {
 
 .calendar__notification {
   width: 100vmin;
-  height: 14vmin;
+  height: 15vmin;
   display: flex;
+  position: absolute;
+  top: 0%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1vmin;
   color: #fff;
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   background-color: #20bf55;
   background-image: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
 }
 
-.calendar__notification h2 {
-  font-weight: 500;
-  font-size: 3vmin;
-  margin-bottom: 1.5vmin;
-}
-
 .calendar__input {
-  border: none;
-  border-radius: 5px;
-  padding: 0.5vmin 1vmin;
-  margin: 1vmin 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100vmin;
+  margin: 2vmin 0;
   font-size: 1em;
 }
 
+.calendar__input .inputBtn {
+  width: 8vmin;
+  height: 4vmin;
+  border: 1px solid #fff;
+  background-color: transparent;
+  color: #fff;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: transform 0.2s;
+}
+
+.calendar__input .inputBtn:nth-child(2) {
+  width: 20vmin;
+}
+
+.calendar__input .inputBtn:active {
+  transform: scale(0.98);
+}
+
+.calendar__input .inputBtn:focus,
 .calendar__input:focus {
   outline: none;
 }
 
 .calendar {
   width: 100vmin;
-  height: 85vmin;
+  height: 80vmin;
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 20px;
+  margin-top: 15vmin;
+}
+
+.oneDisplayMode {
+  width: 65vmin;
+  height: 65vmin;
+  grid-template-rows: repeat(1, 1fr);
+  grid-template-columns: repeat(1, 1fr);
+  font-size: 1.2em !important;
 }
 
 .calendar .monthTable {
@@ -102,6 +128,11 @@ body {
   font-size: 0.8em;
 }
 
+.prevDays,
+.nextDays {
+  opacity: 0.2;
+}
+
 .daysWeek {
   font-weight: 600;
   font-size: 0.9em;
@@ -139,16 +170,20 @@ body {
     background-image: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
   }
 
-  .calendar__notification h2 {
-    font-size: 9vmin;
-    margin-bottom: 5vmin;
-    width: 100%;
-  }
-
   .calendar__input {
     margin: 10vmin 0vmin;
     width: 100%;
-    padding: 10px;
+    height: 15vmin;
+  }
+
+  .calendar__input .inputBtn {
+    width: 12vmin;
+    height: 12vmin;
+    font-size: 0.9em;
+  }
+  .calendar__input .inputBtn:nth-child(2) {
+    width: 40vmin;
+    margin: 0 10vmin;
   }
 
   .calendar {
@@ -156,6 +191,7 @@ body {
     grid-template-columns: repeat(1, 1fr);
     width: 90vmin;
     margin: 0 auto;
+    margin-top: 80vmin;
   }
 
   .calendar .monthTable,

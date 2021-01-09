@@ -1,92 +1,63 @@
 //* get elements from html.
 const cal = document.querySelector(".calendar");
-const title = document.querySelector(".calendar__title");
 const startDayInput = document.getElementById("startDayInput");
 
-const date = new Date();
-const year = date.getFullYear();
-const thisMonth = date.getMonth() + 1;
-const today = date.getDay();
-let start = 0;
+const today = new Date();
+const currentYear = today.getFullYear();
+const currentMonth = today.getMonth();
+const currentDay = String(today.getDate()).padStart(1, "0");
+const ctrlBtns = document.getElementsByClassName("inputBtn");
 
-//* set site title
-title.innerHTML = `Calendar ${year}`;
-
-startDayInput.addEventListener("input", (event) => {
-  event.preventDefault();
-
-  if (event.data === null) {
-    return;
-  } else if (event.data >= 0 && event.data < 7) {
-    start = parseInt(event.data);
-    clearCalendar();
-    printCalendar();
-  }
-});
-
-const isLeapYear = (year) => {
-  if (year % 4 === 0 && (year % 400 === 0 || year % 100 !== 0)) {
-    return true;
-  }
-};
+const CALENDAR_SIZE = 42; // 7 * 6 size.
 
 let daysWeek = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
-let monthes = [
-  {
-    name: "January",
-    days: 31,
-  },
-  {
-    name: "February",
-    days: isLeapYear(year) ? 29 : 28,
-  },
-  {
-    name: "March",
-    days: 31,
-  },
-  {
-    name: "April",
-    days: 30,
-  },
-  {
-    name: "May",
-    days: 31,
-  },
-  {
-    name: "June",
-    days: 30,
-  },
-  {
-    name: "July",
-    days: 31,
-  },
-  {
-    name: "August",
-    days: 31,
-  },
-  {
-    name: "September",
-    days: 30,
-  },
-  {
-    name: "October",
-    days: 31,
-  },
-  {
-    name: "November",
-    days: 30,
-  },
-  {
-    name: "December",
-    days: 31,
-  },
-];
 
-function printMonth(month) {
+function getMonthName(currentMonthIdx) {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return monthNames[currentMonthIdx];
+}
+
+function createCalendarElement(data, className = null) {
+  const element = document.createElement("div");
+  if (className) {
+    element.classList.add(className);
+    element.innerHTML = data;
+  } else {
+    element.innerHTML = "00".concat(data + 1).slice(-2);
+  }
+  return element;
+}
+
+function clearCalendar() {
+  cal.innerHTML = "";
+}
+
+const setCalendarData = (year, month, startDay = -1) => {
+  // get first day , last day of current month.
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+
+  // get last day of last year prev month.
+  const prevDay = new Date(year, month, 0).getDate();
+
+  // create elements for display calendar.
   const monthTable = document.createElement("div");
   const monthName = document.createElement("div");
   const monthContant = document.createElement("div");
-  let offset = 0;
+  const start = startDay >= 0 ? startDay : firstDay.getDay();
 
   // adding classes.
   monthTable.classList.add("monthTable");
@@ -94,69 +65,100 @@ function printMonth(month) {
   monthContant.classList.add("monthTable__contant");
 
   // adding month name on table.
-  monthName.innerHTML = month.name.concat(` ${year}`);
+  monthName.innerHTML = getMonthName(month).concat(` ${currentYear}`);
   monthTable.appendChild(monthName);
   cal.appendChild(monthTable);
 
-  // adding day name into table.
+  // add daysWeek element into calendar.
   for (let i = 0; i < daysWeek.length; i++) {
-    const monthDay = document.createElement("div");
-    monthDay.classList.add("daysWeek");
-    monthDay.innerHTML = daysWeek[i];
-    monthContant.appendChild(monthDay);
+    monthContant.appendChild(createCalendarElement(daysWeek[i], "daysWeek"));
   }
-  monthTable.appendChild(monthContant);
 
-  // puch empty space of calendar.
-  for (let i = 0; i < start; i++) {
-    const monthDay = document.createElement("div");
-    monthDay.innerHTML = "";
-    monthContant.appendChild(monthDay);
+  // adding last month days into table.
+  for (let i = start - 1; i >= 0; i--) {
+    monthContant.appendChild(createCalendarElement(prevDay - i, "prevDays"));
   }
-  monthTable.appendChild(monthContant);
 
-  //adding days into table.
-  for (let i = 0; i < month.days; i++) {
-    const monthDay = document.createElement("div");
-    const currentDay = (start + i + 1) % 7;
-    monthDay.innerHTML = "00".concat(i + 1).slice(-2);
+  //adding current days into table.
+  for (let i = 0; i < lastDay.getDate(); i++) {
+    const dayElement = createCalendarElement(i);
+    const currentDayNumber = (start + i + 1) % 7;
 
-    if (i + 1 == today && month.name === monthes[thisMonth - 1].name) {
-      monthDay.classList.add("today");
+    if (i + 1 == currentDay && firstDay.getMonth() == currentMonth) {
+      dayElement.classList.add("today");
     }
 
-    switch (currentDay) {
+    switch (currentDayNumber) {
       case 0:
-        monthDay.classList.add("sat");
-        offset++;
+        dayElement.classList.add("sat");
         break;
       case 1:
-        monthDay.classList.add("sun");
+        dayElement.classList.add("sun");
         break;
       default:
         break;
     }
-    monthContant.appendChild(monthDay);
+    monthContant.appendChild(dayElement);
+  }
+
+  // adding next days into table. (cut-off)
+  for (
+    let i = 0;
+    i < CALENDAR_SIZE - (firstDay.getDay() + lastDay.getDate());
+    i++
+  ) {
+    const dayElement = createCalendarElement(i);
+    dayElement.classList.add("nextDays");
+    monthContant.appendChild(dayElement);
   }
   monthTable.appendChild(monthContant);
+};
 
-  // update start day of next month.
-  start = (start + month.days) % 7;
-
-  for (let i = 0; i < 7 - start + (offset < 5 ? 7 : 0); i++) {
-    const monthDay = document.createElement("div");
-    monthDay.innerHTML = "";
-    monthContant.appendChild(monthDay);
+function displayAllMonths() {
+  for (let i = 0; i < 12; i++) {
+    setCalendarData(currentYear, i);
   }
-  monthTable.appendChild(monthContant);
 }
 
-function printCalendar() {
-  monthes.forEach((month) => {
-    printMonth(month);
+function activateMonthTable(id) {
+  cal.classList.add("oneDisplayMode");
+  const monthTables = document.getElementsByClassName("monthTable");
+
+  for (let i = 0; i < monthTables.length; i++) {
+    monthTables[i].style.display = "none";
+  }
+  monthTables[id].style.display = "flex";
+}
+
+let currentNav = [...Array(12).keys()];
+let currentId = 0;
+
+Array.from(ctrlBtns).forEach((ctrlBtn) => {
+  ctrlBtn.addEventListener("click", (event) => {
+    const currentInput = parseInt(event.target.value);
+
+    switch (currentInput) {
+      case -1:
+        if (!currentId) {
+          currentId = 12;
+        }
+        currentId = (currentId - 1) % 12;
+        activateMonthTable(currentNav[Math.abs(currentId)]);
+        break;
+      case 0:
+        clearCalendar();
+        cal.classList.remove("oneDisplayMode");
+        displayAllMonths();
+        currentId = 0;
+        break;
+      case 1:
+        currentId = (currentId + 1) % 12;
+        activateMonthTable(currentNav[Math.abs(currentId)]);
+        break;
+      default:
+        break;
+    }
   });
-}
+});
 
-function clearCalendar() {
-  cal.innerHTML = "";
-}
+displayAllMonths();
