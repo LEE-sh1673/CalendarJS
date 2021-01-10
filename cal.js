@@ -1,12 +1,13 @@
+import { CalendarArrowController } from "./arrowController.js";
+
 //* get elements from html.
 const cal = document.querySelector(".calendar");
-const startDayInput = document.getElementById("startDayInput");
+const ctrlBtns = document.getElementsByClassName("inputBtn");
 
 const today = new Date();
 const currentYear = today.getFullYear();
 const currentMonth = today.getMonth();
 const currentDay = String(today.getDate()).padStart(1, "0");
-const ctrlBtns = document.getElementsByClassName("inputBtn");
 
 const CALENDAR_SIZE = 42; // 7 * 6 size.
 
@@ -41,11 +42,7 @@ function createCalendarElement(data, className = null) {
   return element;
 }
 
-function clearCalendar() {
-  cal.innerHTML = "";
-}
-
-const setCalendarData = (year, month, startDay = -1) => {
+function setCalendarData(year, month, startDay = -1) {
   // get first day , last day of current month.
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
@@ -112,51 +109,51 @@ const setCalendarData = (year, month, startDay = -1) => {
     monthContant.appendChild(dayElement);
   }
   monthTable.appendChild(monthContant);
-};
+}
+
+function clearCalendar() {
+  cal.innerHTML = "";
+}
+
+function hideAllMonths() {
+  const monthTables = document.getElementsByClassName("monthTable");
+
+  for (let i = 0; i < monthTables.length; i++) {
+    monthTables[i].style.display = "none";
+  }
+}
 
 function displayAllMonths() {
+  cal.classList.remove("oneDisplayMode");
   for (let i = 0; i < 12; i++) {
     setCalendarData(currentYear, i);
   }
 }
 
 function activateMonthTable(id) {
-  cal.classList.add("oneDisplayMode");
   const monthTables = document.getElementsByClassName("monthTable");
-
-  for (let i = 0; i < monthTables.length; i++) {
-    monthTables[i].style.display = "none";
-  }
   monthTables[id].style.display = "flex";
+  cal.classList.add("oneDisplayMode");
 }
 
-let currentNav = [...Array(12).keys()];
-let currentId = 0;
+const calArrowController = new CalendarArrowController(12);
 
 Array.from(ctrlBtns).forEach((ctrlBtn) => {
   ctrlBtn.addEventListener("click", (event) => {
     const currentInput = parseInt(event.target.value);
 
-    switch (currentInput) {
-      case -1:
-        if (!currentId) {
-          currentId = 12;
-        }
-        currentId = (currentId - 1) % 12;
-        activateMonthTable(currentNav[Math.abs(currentId)]);
-        break;
-      case 0:
-        clearCalendar();
-        cal.classList.remove("oneDisplayMode");
-        displayAllMonths();
-        currentId = 0;
-        break;
-      case 1:
-        currentId = (currentId + 1) % 12;
-        activateMonthTable(currentNav[Math.abs(currentId)]);
-        break;
-      default:
-        break;
+    if (currentInput === 0) {
+      clearCalendar();
+      calArrowController.resetElement();
+      displayAllMonths();
+    } else {
+      hideAllMonths();
+
+      if (currentInput === 1) {
+        activateMonthTable(calArrowController.nextElement());
+      } else {
+        activateMonthTable(calArrowController.prevElement());
+      }
     }
   });
 });
